@@ -4,49 +4,37 @@ package coderpad;
 till A B * of the output, A B repeats twice, but till A B * C *, A B A B C repeats twice.
 */
 
+import java.util.StringJoiner;
+
 public class CompressPattern {
-    public static String compress(String input) {
-        String[] tokens = input.trim().split(" ");
-        StringBuilder result = new StringBuilder();
+    private static void compress(String[] a, int from, int to, StringJoiner out) {
+        if (from >= to) return;
+        int len = to - from;
 
-        int i = 0;
-        while (i < tokens.length) {
-            boolean patternFound = false;
-
-            // Try to find the longest repeating pattern from position i
-            for (int len = 1; i + 2 * len <= tokens.length; len++) {
-                boolean isPattern = true;
-                for (int j = 0; j < len; j++) {
-                    if (!tokens[i + j].equals(tokens[i + len + j])) {
-                        isPattern = false;
-                        break;
-                    }
-                }
-
-                if (isPattern) {
-                    // Append first pattern
-                    for (int j = 0; j < len; j++) {
-                        result.append(tokens[i + j]).append(" ");
-                    }
-                    result.append("* ");
-                    i += 2 * len;
-                    patternFound = true;
+        for (int L = len / 2; L > 0; L--) {
+            boolean match = true;
+            for (int i = 0; i < L; i++) {
+                if (!a[from + i].equals(a[from + L + i])) {
+                    match = false;
                     break;
                 }
             }
-
-            if (!patternFound) {
-                result.append(tokens[i]).append(" ");
-                i++;
+            if (match) {
+                compress(a, from, from + L, out);
+                out.add("*");
+                compress(a, from + 2 * L, to, out);
+                return;
             }
         }
-
-        return result.toString().trim();
+        out.add(a[from]);
+        compress(a, from + 1, to, out);
     }
 
     public static void main(String[] args) {
         String input = "A B A B C A B A B C D";
-        System.out.println(compress(input));  // Output: A B * C * D
+        String[] tokens = input.split("\\s+");
+        StringJoiner out = new StringJoiner(" ");
+        compress(tokens, 0, tokens.length, out);
+        System.out.println(out);  // prints: A B * C * D
     }
 }
-
