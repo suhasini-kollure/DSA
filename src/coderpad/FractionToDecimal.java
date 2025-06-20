@@ -9,9 +9,9 @@ public class FractionToDecimal {
         StringBuilder result = new StringBuilder();
 
         // Step 1: Handle negative sign
-        if ((numerator < 0) ^ (denominator < 0)) {
-            result.append("-");
-        }
+//        if ((numerator < 0) ^ (denominator < 0)) {
+//            result.append("-");
+//        }
 
         // Step 2: Work with absolute values to avoid complications with negatives
         long num = Math.abs((long) numerator);
